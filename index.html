@@ -19,27 +19,10 @@
   --shadow:0 1px 2px rgba(15,31,56,.07), 0 6px 18px rgba(15,31,56,.07);
   color-scheme:light;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0e1420; --surface:#161e2d; --sunken:#1f2a3c; --ink:#e6ecf6; --muted:#9eabc2; --line:#2c3a52;
-    --accent:#8a98ff; --accent-ink:#0b1020; --accent-soft:#232c55;
-    --c-product:#3cc3c4; --c-event:#f2a93b; --c-artifact:#78a0ff; --c-team:#ec6fae;
-    --good:#4fcb8e; --good-soft:#163427; --bad:#ff7d70; --bad-soft:#3d1f1c; --warn-soft:#3a2d12;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0e1420; --surface:#161e2d; --sunken:#1f2a3c; --ink:#e6ecf6; --muted:#9eabc2; --line:#2c3a52;
-  --accent:#8a98ff; --accent-ink:#0b1020; --accent-soft:#232c55;
-  --c-product:#3cc3c4; --c-event:#f2a93b; --c-artifact:#78a0ff; --c-team:#ec6fae;
-  --good:#4fcb8e; --good-soft:#163427; --bad:#ff7d70; --bad-soft:#3d1f1c; --warn-soft:#3a2d12;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
-  color-scheme:dark;
-}
 *{box-sizing:border-box}
 html{scroll-padding-top:70px}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none !important;animation:none !important}}
+html{background:#f5f7fb;color-scheme:light}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--font-b)}
 h1,h2,h3{font-family:var(--font-d);margin:0;text-wrap:balance;letter-spacing:-.015em}
 h1{font-size:clamp(36px,5.2vw,64px);font-weight:800;line-height:1.02}
@@ -180,8 +163,6 @@ footer{max-width:1500px;margin:0 auto;padding:0 20px 70px;color:var(--muted);fon
 .pmr img{height:var(--pmr-h,30px);width:auto;display:block}
 .pmr .pmr-w{display:none}
 .pmr.on-dark .pmr-b{display:none}.pmr.on-dark .pmr-w{display:block}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pmr .pmr-b{display:none}:root:not([data-theme="light"]) .pmr .pmr-w{display:block}}
-:root[data-theme="dark"] .pmr .pmr-b{display:none}:root[data-theme="dark"] .pmr .pmr-w{display:block}
 </style>
 </head>
 <body>
