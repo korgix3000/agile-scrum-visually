@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agile Scrum, Visually</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one long classroom page, a chapter per concept. Each chapter is a big interactive diagram with a short explanation beside it; arrow keys step chapter by chapter for projecting. */
+:root{
+  --bg:#f5f7fb; --surface:#ffffff; --sunken:#e9eef6; --ink:#0f1f38; --muted:#526079; --line:#d5dcea;
+  --accent:#3346d3; --accent-ink:#ffffff; --accent-soft:#e2e6fb;
+  --c-product:#0d8a8c; --c-event:#d98200; --c-artifact:#2f62d6; --c-team:#b8327a;
+  --good:#1d8256; --good-soft:#dcf1e6; --bad:#c7362b; --bad-soft:#fbe2df; --warn-soft:#fdf0d5;
+  --font-d:'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --font-b:'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+  --shadow:0 1px 2px rgba(15,31,56,.07), 0 6px 18px rgba(15,31,56,.07);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1420; --surface:#161e2d; --sunken:#1f2a3c; --ink:#e6ecf6; --muted:#9eabc2; --line:#2c3a52;
+    --accent:#8a98ff; --accent-ink:#0b1020; --accent-soft:#232c55;
+    --c-product:#3cc3c4; --c-event:#f2a93b; --c-artifact:#78a0ff; --c-team:#ec6fae;
+    --good:#4fcb8e; --good-soft:#163427; --bad:#ff7d70; --bad-soft:#3d1f1c; --warn-soft:#3a2d12;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1420; --surface:#161e2d; --sunken:#1f2a3c; --ink:#e6ecf6; --muted:#9eabc2; --line:#2c3a52;
+  --accent:#8a98ff; --accent-ink:#0b1020; --accent-soft:#232c55;
+  --c-product:#3cc3c4; --c-event:#f2a93b; --c-artifact:#78a0ff; --c-team:#ec6fae;
+  --good:#4fcb8e; --good-soft:#163427; --bad:#ff7d70; --bad-soft:#3d1f1c; --warn-soft:#3a2d12;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:70px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none !important;animation:none !important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--font-b)}
+h1,h2,h3{font-family:var(--font-d);margin:0;text-wrap:balance;letter-spacing:-.015em}
+h1{font-size:clamp(36px,5.2vw,64px);font-weight:800;line-height:1.02}
+h2{font-size:clamp(28px,3.4vw,42px);font-weight:800;line-height:1.08}
+h3{font-size:20px;font-weight:600}
+p{margin:0 0 .7em;max-width:65ch}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+svg text{font-family:var(--font-b)}
+
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:14px;padding:10px 20px;max-width:1500px;margin:0 auto}
+.logo{font-family:var(--font-d);font-weight:800;font-size:18px;white-space:nowrap}
+.chips{display:flex;gap:4px;overflow-x:auto;flex:1;scrollbar-width:thin;padding:2px}
+.chips a{white-space:nowrap;text-decoration:none;color:var(--muted);font-size:14px;padding:5px 10px;border-radius:999px}
+.chips a:hover{background:var(--sunken);color:var(--ink)}
+.chips a.on{background:var(--ink);color:var(--bg)}
+.chips a b{font-variant-numeric:tabular-nums;margin-right:4px;opacity:.6}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:700;font-size:15px}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.sm{padding:5px 10px;font-size:14px}
+.btn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:7px 13px;cursor:pointer;font-weight:700;font-size:14px}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+input[type=range]{accent-color:var(--accent);width:100%}
+input[type=text]{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 10px;width:100%}
+
+.hero{max-width:1500px;margin:0 auto;padding:56px 20px 30px;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.hero p.lead{font-size:20px;color:var(--muted)}
+.legend-k{display:flex;gap:16px;flex-wrap:wrap;font-size:15px;margin-top:16px}
+.legend-k span{display:inline-flex;align-items:center;gap:7px}
+.legend-k i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.howto{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);font-size:15px}
+.howto kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;font-size:13px;background:var(--sunken)}
+
+.chap{max-width:1500px;margin:0 auto;padding:46px 20px;border-top:1px solid var(--line)}
+.chap-head{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:baseline;margin-bottom:20px}
+.chap-n{font-family:var(--font-d);font-weight:800;font-size:15px;color:var(--bg);background:var(--ink);border-radius:8px;padding:2px 9px;align-self:center}
+.chap-head p{grid-column:2;color:var(--muted);font-size:18px;margin:4px 0 0}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;align-items:start}
+.stage.wide{grid-template-columns:1fr}
+.canvas{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;min-width:0;overflow:hidden}
+.side{display:grid;gap:12px;align-content:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.panel h3{margin-bottom:6px}
+.panel .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:8px;color:#fff}
+.panel dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0;font-size:15px}
+.panel dt{font-weight:700;color:var(--muted)}
+.panel dd{margin:0}
+.vas{background:var(--sunken);border-left:4px solid var(--c-product);border-radius:0 10px 10px 0;padding:10px 14px;font-size:15px}
+.vas b{display:block;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-product)}
+.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.ctrl label{font-weight:700;font-size:15px}
+.read{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.stat{background:var(--sunken);border-radius:12px;padding:10px 14px;min-width:130px}
+.stat b{display:block;font-family:var(--font-d);font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.hint{font-size:14px;color:var(--muted)}
+.svgwrap svg{display:block;width:100%;height:auto}
+.click{cursor:pointer}
+.click:hover .hl{stroke:var(--ink);stroke-width:3}
+.sel .hl{stroke:var(--ink) !important;stroke-width:3.5 !important}
+
+/* manifesto */
+.mani{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.scale{background:var(--sunken);border-radius:14px;padding:14px;cursor:pointer;border:0;text-align:left;width:100%}
+.scale svg{width:100%;height:auto;display:block}
+.principles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:16px}
+.pr{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;display:grid;grid-template-columns:auto 1fr;gap:10px}
+.pr b{font-family:var(--font-d);font-size:22px;color:var(--accent);line-height:1}
+
+/* team */
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.act{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:14px}
+.act.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.role{border-radius:16px;padding:16px;border:2.5px solid var(--line);background:var(--surface);transition:transform .25s, box-shadow .25s, border-color .25s, opacity .25s}
+.role.lit{transform:translateY(-6px);box-shadow:0 10px 30px rgba(0,0,0,.15)}
+.role.dim{opacity:.38}
+.role .who{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.person{display:inline-flex;align-items:center;gap:6px;background:var(--sunken);border-radius:999px;padding:3px 10px 3px 3px;font-size:13px}
+.person i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700;font-size:11px}
+.role ul{margin:8px 0 0;padding-left:18px;font-size:15px}
+
+/* stories */
+.storycard{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;border-left:6px solid var(--c-product);font-size:18px}
+.storycard em{font-style:normal;font-weight:700;padding:0 3px;border-radius:4px}
+.invest{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:14px 0}
+.inv{border:0;border-radius:12px;padding:10px 6px;background:var(--sunken);cursor:pointer;text-align:center}
+.inv b{display:block;font-family:var(--font-d);font-size:30px;line-height:1}
+.inv span{font-size:12px}
+.inv.on{background:var(--ink);color:var(--bg)}
+.gwt{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:16px}
+.gwt b{font-family:var(--font-d)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.check{list-style:none;padding:0;margin:0;font-size:15px;display:grid;gap:4px}
+.check li::before{content:"✓ ";color:var(--good);font-weight:700}
+
+/* estimation */
+.fibs{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.fcard{border-radius:10px;background:var(--surface);border:2px solid var(--ink);display:grid;place-items:center;font-family:var(--font-d);font-weight:800;cursor:pointer;transition:transform .2s}
+.fcard:hover{transform:translateY(-4px)}
+.fcard.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.poker{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0}
+.pk{text-align:center;font-size:13px}
+.pk .c{width:62px;height:86px;border-radius:9px;display:grid;place-items:center;font-family:var(--font-d);font-weight:800;font-size:26px;border:2px solid var(--ink);background:var(--surface);transition:transform .45s}
+.pk .c.down{background:repeating-linear-gradient(45deg,var(--accent),var(--accent) 7px,var(--accent-soft) 7px,var(--accent-soft) 14px);color:transparent;border-color:var(--accent)}
+
+/* quiz */
+.q{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.q h3{font-size:18px;margin-bottom:10px}
+.opts{display:grid;gap:6px}
+.opt{text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;cursor:pointer}
+.opt.right{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
+.why{font-size:15px;color:var(--muted);margin-top:8px}
+
+footer{max-width:1500px;margin:0 auto;padding:0 20px 70px;color:var(--muted);font-size:14px}
+
+.presenting .hero,.presenting footer{display:none}
+.presenting .chap{display:none;border-top:0}
+.presenting .chap.cur{display:block;min-height:calc(100vh - 60px);padding-bottom:90px}
+.pnav{position:fixed;right:20px;bottom:20px;z-index:30;display:none;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;box-shadow:var(--shadow)}
+.presenting .pnav{display:flex}
+.pfoot{position:fixed;left:20px;bottom:20px;z-index:30;display:none !important;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.presenting .pfoot{display:inline-flex !important}
+.pnav span{font-weight:700;min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
+@media (max-width:1050px){.stage{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.roles{grid-template-columns:1fr}.mani{grid-template-columns:1fr}.invest{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1fr}}
+@media (max-width:560px){.chap{padding:34px 14px}.top-in{padding:8px 14px}.logo{display:none}}
+
+.pmr{display:inline-flex;align-items:center;flex:none}
+.pmr img{height:var(--pmr-h,30px);width:auto;display:block}
+.pmr .pmr-w{display:none}
+.pmr.on-dark .pmr-b{display:none}.pmr.on-dark .pmr-w{display:block}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pmr .pmr-b{display:none}:root:not([data-theme="light"]) .pmr .pmr-w{display:block}}
+:root[data-theme="dark"] .pmr .pmr-b{display:none}:root[data-theme="dark"] .pmr .pmr-w{display:block}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in"><nav class="chips" id="chips" aria-label="Chapters"></nav><button class="btn sm" id="present" aria-pressed="false">Present</button></div></header>
+<div class="pfoot pmr" style="--pmr-h:20px" aria-hidden="true"><img class="pmr-b" src="data:image/png;base64,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" alt="Project Management Revolution"><img class="pmr-w" src="data:image/png;base64,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" alt="Project Management Revolution"></div>
+<div class="pnav" aria-label="Presentation controls"><button class="btn" id="p-prev" aria-label="Previous chapter">←</button><span id="p-count"></span><button class="btn primary" id="p-next" aria-label="Next chapter">→</button><button class="btn sm" id="p-exit">Exit</button></div>
+
+<section class="hero">
+  <div>
+    <h1>Agile Scrum, one big picture at a time</h1>
+    <p class="lead" style="margin-top:16px">Every concept from the course as a diagram you can click, play and drag, using the Vangelis Auto Show project and its Neo Get In app as the example throughout.</p>
+    <div class="legend-k"><span><i style="background:var(--c-product)"></i>Product &amp; goals</span><span><i style="background:var(--c-event)"></i>Events</span><span><i style="background:var(--c-artifact)"></i>Artifacts</span><span><i style="background:var(--c-team)"></i>People</span></div>
+  </div>
+  <div class="howto"><h3 style="margin-bottom:6px">How to use this page</h3><p>Pick a chapter at the top, or press <b>Present</b> and use <kbd>←</kbd> <kbd>→</kbd> to step through chapters on a projector.</p><p style="margin:0">Anything with a pointer cursor is clickable. Sliders and <b>Play</b> buttons animate the ideas. Based on the 2020 Scrum Guide by Ken Schwaber and Jeff Sutherland, the current official version.</p></div>
+</section>
+
+<section class="chap" id="why" data-title="Why Agile">
+  <div class="chap-head"><span class="chap-n">01</span><h2>Why Agile: value early, not all at the end</h2><p>Drag the timeline. Waterfall delivers nothing usable until the very end; Agile ships a working increment every sprint and learns from feedback each time.</p></div>
+  <div class="stage"><div class="canvas"><div class="ctrl"><label for="why-t">Week <span id="why-wk" class="num">0</span></label><input id="why-t" type="range" min="0" max="40" value="0" style="max-width:520px"><button class="btn sm" id="why-play">Play</button><button class="btn sm" id="why-change">A requirement changes at week 22</button></div><div class="svgwrap" id="why-svg"></div></div>
+  <div class="side"><div class="read" style="margin:0"><div class="stat"><b id="why-wv">0%</b><span>Waterfall value delivered</span></div><div class="stat"><b id="why-av">0%</b><span>Agile value delivered</span></div><div class="stat"><b id="why-fb">0</b><span>Agile feedback loops so far</span></div></div>
+  <div class="panel" id="why-note"><h3>Same 40 weeks, two shapes</h3><p>Waterfall runs each phase once, in order. Agile runs all of them in every two-week sprint, so working software reaches users from the first sprint and the highest-value features come first.</p></div>
+  <div class="vas"><b>Vangelis Auto Show</b>The release plan is 20 two-week sprints. Release 1 (bare-bones Get In app) ships after sprint 7, not after week 40.</div></div></div>
+</section>
+
+<section class="chap" id="manifesto" data-title="Manifesto">
+  <div class="chap-head"><span class="chap-n">02</span><h2>The Agile Manifesto: four trade-offs</h2><p>Each value says what weighs more, not what's useless. Click a scale to tip it and see what it means in practice.</p></div>
+  <div class="mani" id="mani"></div>
+  <h3 style="margin-top:22px">The 12 principles, in short</h3>
+  <div class="principles" id="principles"></div>
+</section>
+
+<section class="chap" id="pillars" data-title="Pillars & values">
+  <div class="chap-head"><span class="chap-n">03</span><h2>Empiricism: three pillars on five values</h2><p>Scrum is built on learning from what actually happens. Click a pillar or a value stone.</p></div>
+  <div class="stage"><div class="canvas"><div class="svgwrap" id="pil-svg"></div></div><div class="side"><div class="panel" id="pil-note"></div></div></div>
+</section>
+
+<section class="chap" id="framework" data-title="The framework">
+  <div class="chap-head"><span class="chap-n">04</span><h2>The Scrum framework on one page</h2><p>Press Play to follow one sprint around the loop, or click any part. Colours: <span style="color:var(--c-product);font-weight:700">product</span>, <span style="color:var(--c-event);font-weight:700">events</span>, <span style="color:var(--c-artifact);font-weight:700">artifacts</span>.</p></div>
+  <div class="stage"><div class="canvas"><div class="ctrl"><button class="btn primary sm" id="fw-play">Play the loop</button><button class="btn sm" id="fw-prev">← Step</button><button class="btn sm" id="fw-next">Step →</button><span class="hint" id="fw-step"></span></div><div class="svgwrap" id="fw-svg"></div></div>
+  <div class="side"><div class="panel" id="fw-note"></div></div></div>
+</section>
+
+<section class="chap" id="team" data-title="Scrum Team">
+  <div class="chap-head"><span class="chap-n">05</span><h2>The Scrum Team: three accountabilities</h2><p>One team, typically 10 people or fewer, with no sub-teams or hierarchy. Click an activity to see who is accountable for it.</p></div>
+  <div class="acts" id="acts"></div>
+  <div class="roles" id="roles"></div>
+  <p class="hint" style="margin-top:12px">Job titles are not accountabilities: Sandra (business analyst), Brent (UX/IA) and Momenti (front-end) are all Developers in Scrum terms. Stakeholders are outside the Scrum Team; they take part in the Sprint Review.</p>
+</section>
+
+<section class="chap" id="events" data-title="Events">
+  <div class="chap-head"><span class="chap-n">06</span><h2>The five events on a sprint calendar</h2><p>The Sprint is the container; the other four events happen inside it. Change the sprint length to see how the timeboxes scale.</p></div>
+  <div class="stage"><div class="canvas"><div class="ctrl"><label>Sprint length</label><div class="seg" id="ev-len"></div><span class="hint">Maximum timeboxes from the Scrum Guide are for a one-month sprint; shorter sprints usually need less.</span></div><div class="svgwrap" id="ev-svg"></div></div>
+  <div class="side"><div class="panel" id="ev-note"></div><div class="panel"><h3>Timeboxes at this length</h3><div id="ev-table"></div></div></div></div>
+</section>
+
+<section class="chap" id="artifacts" data-title="Artifacts">
+  <div class="chap-head"><span class="chap-n">07</span><h2>Three artifacts, three commitments</h2><p>Each artifact has a commitment that says what it's for. Work flows left to right; click an item to see where it ends up.</p></div>
+  <div class="canvas"><div class="svgwrap" id="art-svg"></div></div>
+  <div class="two" style="margin-top:14px"><div class="panel" id="art-note"></div><div class="vas"><b>Vangelis Auto Show</b><p style="margin:4px 0">Product Goal: a Get In app that lets show visitors explore and configure the Neo vehicle.</p><p style="margin:0">Sprint Goal (VAS Sprint 1): Navigation Completion; Screen Saver Look &amp; Feel.</p></div></div>
+</section>
+
+<section class="chap" id="backlog" data-title="Backlog & story map">
+  <div class="chap-head"><span class="chap-n">08</span><h2>From epics to a story map with release lines</h2><p>Epics are the backbone across the top; stories hang below in priority order. Drag the slider to move the release line and see what's in Release 1.</p></div>
+  <div class="stage"><div class="canvas"><div class="ctrl"><label for="sm-cut">Release 1 line</label><input id="sm-cut" type="range" min="1" max="4" value="2" style="max-width:300px"><span class="hint" id="sm-read"></span></div><div class="svgwrap" id="sm-svg"></div></div>
+  <div class="side"><div class="panel"><h3>The hierarchy</h3><div class="svgwrap" id="tree-svg"></div><p class="hint" style="margin-top:8px">In Jira everything is an issue. Tasks and sub-tasks are steps of work; they don't get story points.</p></div><div class="panel" id="sm-note"><h3>Story mapping</h3><p>The team builds the map in a workshop: the user's journey left to right, detail top to bottom. Slicing it horizontally gives releases that each work end to end.</p></div></div></div>
+</section>
+
+<section class="chap" id="stories" data-title="User stories">
+  <div class="chap-head"><span class="chap-n">09</span><h2>Anatomy of a good user story</h2><p>Type into the three parts to build a story, then check it against INVEST. Click a letter to see a good and a bad example.</p></div>
+  <div class="stage"><div class="canvas">
+    <div class="two"><label>As a…<input type="text" id="us-role" value="Neo vehicle enthusiast"></label><label>I would like…<input type="text" id="us-goal" value="to understand what Neo Core Audio System offerings are available"></label></div>
+    <label style="display:block;margin-top:10px">so that…<input type="text" id="us-why" value="I can be better informed what type of speakers and amp are available"></label>
+    <div class="storycard" id="us-card" style="margin-top:14px"></div>
+    <div class="invest" id="invest"></div>
+    <div class="panel" id="inv-note"></div>
+  </div>
+  <div class="side"><div class="panel"><h3>Acceptance criteria</h3><div class="gwt"><b style="color:var(--c-product)">Given</b><span>a user is on the Bose Audio System screen of the Get In app</span><b style="color:var(--c-event)">When</b><span>he clicks "Neo Core Audio System"</span><b style="color:var(--c-artifact)">Then</b><span>he sees the Neo Core screen with the speakers and amp offered</span></div></div>
+  <div class="panel"><h3>Ready vs Done</h3><div class="two" style="gap:10px"><div><b style="font-size:14px">Definition of Ready (team practice)</b><ul class="check"><li>Story format</li><li>Acceptance criteria</li><li>Estimated</li><li>Fits in a sprint</li></ul></div><div><b style="font-size:14px">Definition of Done (Scrum commitment)</b><ul class="check"><li>Creative, copy, specs</li><li>Unit tested, QA, UAT</li><li>Deployed to production</li></ul></div></div></div></div></div>
+</section>
+
+<section class="chap" id="estimation" data-title="Estimation">
+  <div class="chap-head"><span class="chap-n">10</span><h2>Story points: size by comparison</h2><p>Points measure effort, complexity and uncertainty relative to a reference story, not hours. The gaps widen because bigger work is less certain. Click a card.</p></div>
+  <div class="stage"><div class="canvas"><div class="fibs" id="fibs"></div><div class="panel" id="fib-note" style="margin-top:14px"></div>
+    <h3 style="margin-top:18px">Planning poker</h3><p class="hint">Everyone picks a card at once, so nobody anchors on the first number said aloud.</p>
+    <div class="ctrl"><button class="btn primary sm" id="pk-deal">Deal a round</button><button class="btn sm" id="pk-reveal">Reveal</button><span id="pk-msg" class="hint"></span></div><div class="poker" id="pk"></div></div>
+  <div class="side"><div class="vas"><b>From JiraTutorial2</b>Look &amp; Feel spike: 5 points. Neo Core Audio System: 20 points, because design plus development is more complex. Tasks such as the research spike for audio systems get no points.</div><div class="panel"><h3>Why not hours?</h3><p style="margin:0">People disagree on hours but agree surprisingly well on "about twice as big as that one". Comparing is faster, and it stays true whoever ends up doing the work.</p></div></div></div>
+</section>
+
+<section class="chap" id="velocity" data-title="Velocity & forecast">
+  <div class="chap-head"><span class="chap-n">11</span><h2>Velocity turns points into a forecast</h2><p>Velocity is the points a team completes per sprint. Click a bar's + or − to change a sprint, then move the backlog slider to see how many sprints remain.</p></div>
+  <div class="stage"><div class="canvas"><div class="svgwrap" id="vel-svg"></div><div class="ctrl" style="margin-top:12px"><label for="vel-bl">Points left in the backlog: <span id="vel-blv" class="num"></span></label><input id="vel-bl" type="range" min="20" max="400" step="10" value="180" style="max-width:420px"></div></div>
+  <div class="side"><div class="read" style="margin:0" id="vel-read"></div><div class="panel"><h3>A range, not a promise</h3><p>Use the slowest and fastest recent sprints to give a range. Velocity settles after 3 or 4 sprints. It's a planning tool for one team, never a target or a way to compare teams.</p></div></div></div>
+</section>
+
+<section class="chap" id="board" data-title="Board & flow">
+  <div class="chap-head"><span class="chap-n">12</span><h2>The board: work flows left to right</h2><p>The 9 columns from the team's working agreement. Press Play to watch a sprint flow, then try a work-in-progress limit and see the queue form in front of QA.</p></div>
+  <div class="canvas"><div class="ctrl"><button class="btn primary sm" id="fl-play">Play</button><button class="btn sm" id="fl-reset">Reset</button><label><input type="checkbox" id="fl-wip"> Limit Development to 2 cards</label><span class="hint num" id="fl-day"></span></div><div class="svgwrap" id="fl-svg"></div></div>
+  <p class="hint" style="margin-top:10px">Cards are pulled into the next column when someone has capacity, not pushed. A pile-up shows the bottleneck: here QA, with one tester for the whole team.</p>
+</section>
+
+<section class="chap" id="burndown" data-title="Burndown">
+  <div class="chap-head"><span class="chap-n">13</span><h2>Reading a burndown chart</h2><p>Remaining points per day of the sprint, against the ideal straight line. Pick a pattern to see what it usually means.</p></div>
+  <div class="stage"><div class="canvas"><div class="ctrl"><div class="seg" id="bd-seg"></div></div><div class="svgwrap" id="bd-svg"></div></div><div class="side"><div class="panel" id="bd-note"></div></div></div>
+</section>
+
+<section class="chap" id="release" data-title="Releases & MVP">
+  <div class="chap-head"><span class="chap-n">14</span><h2>Increments add up to releases</h2><p>Drag through the 20 sprints of the release plan. Each sprint adds a working slice to the Get In app; Release 1 and Release 2 (the MVP) bundle them for users.</p></div>
+  <div class="stage"><div class="canvas"><div class="ctrl"><label for="rl-s">After sprint <span id="rl-n" class="num"></span></label><input id="rl-s" type="range" min="0" max="20" value="7" style="max-width:520px"></div><div class="svgwrap" id="rl-svg"></div></div>
+  <div class="side"><div class="panel" id="rl-note"></div><div class="panel"><h3>MVP</h3><p style="margin:0">A minimum viable product is the smallest version people can actually use and learn from. In the course, Release 1 is bare bones; Release 2 is treated as the MVP because it's the first one with enough features to really try out.</p></div></div></div>
+</section>
+
+<section class="chap" id="quiz" data-title="Check yourself">
+  <div class="chap-head"><span class="chap-n">15</span><h2>Check yourself</h2><p>Eight quick questions. Your score shows at the end of the list.</p></div>
+  <div class="qgrid" id="qz"></div>
+  <div class="read"><div class="stat"><b id="qz-score">0 / 8</b><span>correct</span></div></div>
+</section>
+
+<footer><div class="pmr" style="--pmr-h:44px;display:flex;justify-content:center"><img class="pmr-b" src="data:image/png;base64,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" alt="Project Management Revolution"><img class="pmr-w" src="data:image/png;base64,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" alt="Project Management Revolution"></div></footer>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const C={p:'var(--c-product)',e:'var(--c-event)',a:'var(--c-artifact)',t:'var(--c-team)',ink:'var(--ink)',mut:'var(--muted)',line:'var(--line)',sur:'var(--surface)',sun:'var(--sunken)',good:'var(--good)',bad:'var(--bad)',acc:'var(--accent)'};
+const T=(x,y,t,o={})=>`<text x="${x}" y="${y}" font-size="${o.s||15}" font-weight="${o.w||400}" fill="${o.f||C.ink}" text-anchor="${o.a||'middle'}" ${o.fam?`font-family="${o.fam}"`:''}>${esc(t)}</text>`;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- nav ---------- */
+const chaps=[...document.querySelectorAll('.chap')];let curK=0;
+$('#chips').innerHTML=chaps.map((c,k)=>`<a href="#${c.id}" data-k="${k}"><b>${String(k+1).padStart(2,'0')}</b>${esc(c.dataset.title)}</a>`).join('');
+const presenting=()=>document.body.classList.contains('presenting');
+function markChip(k){curK=k;document.querySelectorAll('#chips a').forEach((a,i)=>a.classList.toggle('on',i===k));const a=document.querySelectorAll('#chips a')[k];if(a){const nav=$('#chips');nav.scrollLeft=a.offsetLeft-nav.clientWidth/2+a.clientWidth/2}$('#p-count').textContent=`${k+1} / ${chaps.length}`}
+function showChap(k){k=Math.max(0,Math.min(chaps.length-1,k));markChip(k);if(presenting()){chaps.forEach((c,i)=>c.classList.toggle('cur',i===k));window.scrollTo(0,0)}else{const y=chaps[k].getBoundingClientRect().top+window.scrollY-62;window.scrollTo({top:y,behavior:'instant'})}}
+$('#chips').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();showChap(+a.dataset.k)});
+function curChap(){if(presenting())return curK;let best=0;chaps.forEach((c,k)=>{if(c.getBoundingClientRect().top<innerHeight*0.4)best=k});return best}
+let spy=0;addEventListener('scroll',()=>{if(presenting())return;cancelAnimationFrame(spy);spy=requestAnimationFrame(()=>{const k=curChap();if(k!==curK||!document.querySelector('#chips a.on'))markChip(k)})},{passive:true});
+document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select'))return;if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();const atTop=!presenting()&&chaps[0].getBoundingClientRect().top>innerHeight*0.4;showChap(atTop?0:curChap()+1)}if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();showChap(curChap()-1)}if(e.key==='Escape'&&presenting())setPresent(false)});
+function setPresent(on){const k=curChap();document.body.classList.toggle('presenting',on);const b=$('#present');b.setAttribute('aria-pressed',on);b.classList.toggle('on',on);b.textContent=on?'Exit presentation':'Present';if(!on)chaps.forEach(c=>c.classList.remove('cur'));showChap(k)}
+$('#present').onclick=()=>setPresent(!presenting());$('#p-exit').onclick=()=>setPresent(false);
+$('#p-prev').onclick=()=>showChap(curK-1);$('#p-next').onclick=()=>showChap(curK+1);
+markChip(0);
+
+/* ---------- 01 why ---------- */
+(()=>{const W=1000,H=430,L=110,R=980,wk=w=>L+(R-L)*w/40;let t=0,change=false,timer=null;
+  const phases=[['Requirements',0,8],['Design',8,16],['Build',16,30],['Test',30,38],['Release',38,40]];
+  const aval=w=>{const s=Math.floor(w/2);let v=0;for(let k=1;k<=s;k++)v+=Math.max(1.5,9-k*0.38);return Math.min(100,v)};
+  function draw(){let g='';
+    for(let w=0;w<=40;w+=4)g+=`<line x1="${wk(w)}" x2="${wk(w)}" y1="30" y2="${H-30}" stroke="${C.line}" stroke-dasharray="2 4"/>`+T(wk(w),H-10,w===0?'week 0':String(w),{s:13,f:C.mut});
+    g+=T(20,72,'Waterfall',{a:'start',w:700,s:16})+T(20,222,'Agile',{a:'start',w:700,s:16})+T(20,240,'2-week sprints',{a:'start',s:12,f:C.mut});
+    phases.forEach(([n,a,b],k)=>{const done=t>=b,act=t>a&&t<b;g+=`<rect x="${wk(a)+1}" y="50" width="${wk(b)-wk(a)-2}" height="40" rx="6" fill="${done||act?C.e:C.sun}" opacity="${done?1:act?.6:1}"/>`+T((wk(a)+wk(b))/2,75,n,{s:13,w:700,f:done||act?'#fff':C.mut})});
+    if(change){g+=`<path d="M${wk(22)} 95 C ${wk(22)} 130, ${wk(10)} 130, ${wk(10)} 95" stroke="${C.bad}" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>`+T(wk(16),142,'Change at week 22: back to Design, rework',{s:13,w:700,f:C.bad})}
+    for(let s=0;s<20;s++){const a=s*2,b=a+2,done=t>=b,act=t>a&&t<b;g+=`<rect x="${wk(a)+1.5}" y="200" width="${wk(b)-wk(a)-3}" height="40" rx="5" fill="${done||act?C.p:C.sun}" opacity="${act?.6:1}"/>`;if(done)g+=`<path d="M${wk(b)} 246 l6 8 -6 8 -6 -8z" fill="${C.a}"/>`}
+    if(change&&t>=22)g+=T(wk(23),186,'Change goes into the backlog; next sprint picks it up',{s:13,w:700,f:C.p,a:'start'});
+    const base=H-40,top=280,hy=v=>base-(base-top)*v/100;
+    g+=`<line x1="${L}" x2="${R}" y1="${base}" y2="${base}" stroke="${C.line}"/>`+T(20,top+8,'Value',{a:'start',w:700,s:14})+T(20,top+24,'delivered',{a:'start',s:12,f:C.mut});
+    const wfEnd=change?44:40;let wp=`M${wk(0)} ${hy(0)} L${wk(Math.min(t,wfEnd))} ${hy(0)}`;if(t>=wfEnd)wp+=` L${wk(wfEnd)} ${hy(100)}`;
+    let ap=`M${wk(0)} ${hy(0)}`;for(let w=0;w<=t;w+=0.5)ap+=` L${wk(w)} ${hy(aval(w))}`;
+    g+=`<path d="${ap}" stroke="${C.p}" stroke-width="3.5" fill="none"/><path d="${wp}" stroke="${C.e}" stroke-width="3.5" fill="none" stroke-dasharray="${t<wfEnd?'0':'0'}"/>`;
+    g+=`<line x1="${wk(t)}" x2="${wk(t)}" y1="40" y2="${base}" stroke="${C.ink}" stroke-width="2"/><circle cx="${wk(t)}" cy="40" r="6" fill="${C.ink}"/>`;
+    g+=`<g font-size="13">${T(R,top-6,'— Agile',{a:'end',f:C.p,w:700,s:13})}${T(R-70,top-6,'— Waterfall',{a:'end',f:C.e,w:700,s:13})}</g>`;
+    $('#why-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Waterfall versus Agile value delivery at week ${t}"><defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5 0 10z" fill="${css('--bad')}"/></marker></defs>${g}</svg>`;
+    $('#why-wk').textContent=t;$('#why-wv').textContent=(t>=wfEnd?100:0)+'%';$('#why-av').textContent=Math.round(aval(t))+'%';$('#why-fb').textContent=Math.floor(t/2);
+    $('#why-note').innerHTML=change?`<h3>Change costs different amounts</h3><p>In Waterfall a change after design means going back a phase: the plan slips to week 44 and nothing has reached users yet. In Agile the Product Owner adds the change to the backlog and orders it; the next sprint can start on it, and nothing already shipped is lost.</p>`:`<h3>Same 40 weeks, two shapes</h3><p>Waterfall runs each phase once, in order. Agile runs all of them in every two-week sprint, so working software reaches users from the first sprint and the highest-value features come first. That's why the Agile curve rises fast, then flattens.</p>`}
+  $('#why-t').oninput=e=>{t=+e.target.value;draw()};
+  $('#why-play').onclick=()=>{if(timer){clearInterval(timer);timer=null;$('#why-play').textContent='Play';return}if(t>=40)t=0;$('#why-play').textContent='Pause';timer=setInterval(()=>{t++;$('#why-t').value=t;draw();if(t>=40){clearInterval(timer);timer=null;$('#why-play').textContent='Play'}},reduce?40:220)};
+  $('#why-change').onclick=e=>{change=!change;e.target.classList.toggle('on',change);if(change&&t<22){t=26;$('#why-t').value=t}draw()};
+  draw()})();
+
+/* ---------- 02 manifesto ---------- */
+(()=>{const V=[['Individuals and interactions','Processes and tools','At the show stand, Brent and Momenti talk through a screen in five minutes instead of filing a ticket and waiting a day.'],['Working software','Comprehensive documentation','A clickable Neo Core Audio System screen tells the client more than a 30-page spec, and the stories still keep enough detail to build it.'],['Customer collaboration','Contract negotiation','Vangelis staff see each increment at the sprint review and steer what comes next, instead of signing off a fixed scope up front.'],['Responding to change','Following a plan','When visitors keep asking about seats, the Product Owner moves the Seats epic up. The release plan is a forecast, not a contract.']];
+  const tip=V.map(()=>false);
+  function scale(k){const [a,b]=V[k];const ang=(tip[k]?14:6)*Math.PI/180,cx=230,cy=64,L=165;const lx=cx-L*Math.cos(ang),ly=cy+L*Math.sin(ang),rx=cx+L*Math.cos(ang),ry=cy-L*Math.sin(ang);
+    const pan=(x,y,fill,h)=>`<line x1="${x}" y1="${y}" x2="${x}" y2="${y+40}" stroke="${C.ink}" stroke-width="2"/><rect x="${x-58}" y="${y+40}" width="116" height="${h}" rx="8" fill="${fill}"/>`;
+    return `<svg viewBox="0 0 460 232"><line x1="${lx}" y1="${ly}" x2="${rx}" y2="${ry}" stroke="${C.ink}" stroke-width="9" stroke-linecap="round"/>${pan(lx,ly,C.p,tip[k]?40:30)}${pan(rx,ry,C.line,22)}<path d="M${cx} ${cy} l-26 120 h52z" fill="${C.ink}"/><circle cx="${cx}" cy="${cy}" r="7" fill="${C.ink}"/>${T(14,222,a,{a:'start',w:700,s:15,f:C.p})}${T(446,222,b,{a:'end',s:15,f:C.mut})}</svg>`}
+  function render(){$('#mani').innerHTML=V.map((v,k)=>`<button class="scale" data-k="${k}" aria-pressed="${tip[k]}"><div style="font-family:var(--font-d);font-weight:800;font-size:20px;margin-bottom:6px">${esc(v[0])} <span style="color:var(--muted);font-weight:600">over</span> ${esc(v[1].toLowerCase())}</div>${scale(k)}${tip[k]?`<p style="margin:8px 0 0;font-size:15px">${esc(v[2])}</p>`:'<p class="hint" style="margin:8px 0 0">Click to tip the scale</p>'}</button>`).join('');document.querySelectorAll('.scale').forEach(b=>b.onclick=()=>{tip[b.dataset.k]=!tip[b.dataset.k];render()})}
+  render();
+  const P=['Satisfy the customer by delivering valuable software early and continuously.','Welcome changing requirements, even late; they can be a competitive advantage.','Deliver working software frequently, from a couple of weeks to a couple of months.','Business people and developers work together daily.','Build projects around motivated people; give them support and trust.','Face-to-face conversation is the most effective way to share information.','Working software is the main measure of progress.','Keep a sustainable pace that can be maintained indefinitely.','Continuous attention to technical excellence and good design.','Simplicity: maximise the amount of work not done.','The best designs come from self-organising teams.','At regular intervals, the team reflects and adjusts how it works.'];
+  $('#principles').innerHTML=P.map((p,k)=>`<div class="pr"><b>${k+1}</b><span>${esc(p)}</span></div>`).join('')})();
+
+/* ---------- 03 pillars ---------- */
+(()=>{const items={transparency:['Pillar','Transparency','Everyone can see the real state of the work: the backlog, the board, the Definition of Done. Hidden work can\'t be inspected.','The VAS board shows every card\'s column, including Blocked, so nobody has to ask where a feature is.',C.a],inspection:['Pillar','Inspection','Check progress and artifacts often enough to spot problems early. Every Scrum event is an inspection point.','At each daily stand-up the team checks the board and the burndown against the sprint goal.',C.e],adaptation:['Pillar','Adaptation','When inspection shows something is off, adjust as soon as possible: the plan, the process or the product.','The 20-point story didn\'t fit in Sprint 1, so at the retrospective the team agrees to split anything over 8 points.',C.p],commitment:['Value','Commitment','Committing to the team\'s goals and to supporting each other.','Momenti commits to the sprint goal, not just "his" tickets.',C.t],focus:['Value','Focus','Focusing on the sprint\'s work to make the best progress toward the goals.','Sprint 1 is about Navigation and the Screen Saver, so Seats waits.',C.t],openness:['Value','Openness','Being open about the work and its challenges.','Sandra says at stand-up that she\'s stuck waiting for Bose specs.',C.t],respect:['Value','Respect','Respecting each other as capable, independent people.','The team trusts Brent\'s UX judgement on the screen layout.',C.t],courage:['Value','Courage','Having the courage to do the right thing and work on tough problems.','Nick tells the client the scope request will hurt the sprint goal.',C.t]};
+  let sel='transparency';
+  function draw(){const W=900,H=440;let g=`<path d="M100 120 L450 30 L800 120 Z" fill="${C.ink}"/>`+T(450,100,'Empiricism',{s:30,w:800,f:'var(--bg)',fam:'var(--font-d)'})+`<rect x="110" y="120" width="680" height="18" fill="${C.ink}"/>`;
+    [['transparency',230],['inspection',450],['adaptation',670]].forEach(([k,x])=>{const it=items[k];g+=`<g class="click ${sel===k?'sel':''}" data-k="${k}" tabindex="0" role="button" aria-label="${it[1]}"><rect class="hl" x="${x-55}" y="138" width="110" height="196" fill="${it[4]}" stroke="${C.sur}" stroke-width="2"/>`;for(let i=0;i<5;i++)g+=`<line x1="${x-38+i*19}" x2="${x-38+i*19}" y1="150" y2="322" stroke="rgba(255,255,255,.25)" stroke-width="3"/>`;g+=`<rect x="${x-70}" y="138" width="140" height="14" fill="${it[4]}"/><rect x="${x-70}" y="320" width="140" height="14" fill="${it[4]}"/></g>`+T(x,236,it[1],{s:17,w:700,f:'#fff'})});
+    ['commitment','focus','openness','respect','courage'].forEach((k,i)=>{const x=150+i*150;g+=`<g class="click ${sel===k?'sel':''}" data-k="${k}" tabindex="0" role="button" aria-label="${items[k][1]}"><rect class="hl" x="${x-70}" y="345" width="140" height="62" rx="10" fill="${C.t}" stroke="${C.sur}" stroke-width="2"/></g>`+T(x,382,items[k][1],{s:16,w:700,f:'#fff'})});
+    g+=T(450,432,'The five Scrum values carry the pillars',{s:14,f:C.mut});
+    $('#pil-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Three pillars of empiricism standing on five Scrum values">${g}</svg>`;
+    document.querySelectorAll('#pil-svg .click').forEach(el=>{el.onclick=()=>{sel=el.dataset.k;draw()};el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sel=el.dataset.k;draw()}}});
+    const it=items[sel];$('#pil-note').innerHTML=`<span class="tag" style="background:${it[4]}">${it[0]}</span><h3>${it[1]}</h3><p>${esc(it[2])}</p><div class="vas"><b>Vangelis Auto Show</b>${esc(it[3])}</div>`}
+  draw()})();
+
+/* ---------- 04 framework ---------- */
+(()=>{const N={
+  pb:{t:'Product Backlog',k:'Artifact',c:C.a,d:'An ordered list of everything that might be needed in the product. The Product Owner orders it; anyone can suggest items.',who:'Product Owner',time:'Ongoing',out:'Commitment: the Product Goal',vas:'All 17 epics from the story map, broken into stories like Neo Core Audio System.'},
+  ref:{t:'Backlog refinement',k:'Ongoing activity',c:C.p,d:'Breaking items down, adding detail, estimates and order so the top of the backlog is ready. Not an event: the team does it throughout the sprint.',who:'Product Owner and Developers',time:'As needed',out:'Items ready for planning',vas:'Splitting Neo Core Audio System into a Look & Feel spike and the development story.'},
+  sp:{t:'Sprint Planning',k:'Event',c:C.e,d:'The team agrees why the sprint is valuable (Sprint Goal), what can be done (items from the backlog) and how the work will get done.',who:'Whole Scrum Team',time:'Max 8 h for a 1-month sprint',out:'The Sprint Backlog',vas:'VAS Sprint 1 starts 1 July with goal "Navigation Completion; Screen Saver Look & Feel".'},
+  sb:{t:'Sprint Backlog',k:'Artifact',c:C.a,d:'The Sprint Goal, the backlog items selected for the sprint, and the plan for delivering them. It belongs to the Developers and changes as they learn.',who:'Developers',time:'For one sprint',out:'Commitment: the Sprint Goal',vas:'Look & Feel spike (5), Neo Core Audio System (20), Navigate to previous page (3).'},
+  sprint:{t:'The Sprint',k:'Event (the container)',c:C.e,d:'A fixed-length period of one month or less in which all the work happens. A new sprint starts right after the previous one ends. The sprint goal doesn\'t change mid-sprint.',who:'Whole Scrum Team',time:'1 month or less (VAS: 2 weeks)',out:'One or more usable Increments',vas:'20 two-week sprints in the release plan.'},
+  daily:{t:'Daily Scrum',k:'Event',c:C.e,d:'15 minutes for the Developers to inspect progress toward the sprint goal and adapt the plan for the next day. Same time and place every working day.',who:'Developers (SM and PO may attend)',time:'15 min',out:'An updated plan for the day',vas:'Around the room: what did you do, what\'s next, any blockers? Quick filters show each person\'s cards.'},
+  inc:{t:'Increment',k:'Artifact',c:C.a,d:'A concrete, usable step toward the Product Goal. Work only counts as an increment when it meets the Definition of Done. Several can be created in a sprint.',who:'Developers',time:'At least once per sprint',out:'Commitment: the Definition of Done',vas:'A working navigation flow and screen saver, tested, through UAT and deployed.'},
+  rev:{t:'Sprint Review',k:'Event',c:C.e,d:'The team shows what it achieved to stakeholders and they discuss what to do next. A working session, not a slide presentation.',who:'Scrum Team and stakeholders',time:'Max 4 h for a 1-month sprint',out:'An adjusted Product Backlog',vas:'Vangelis staff try the Get In app and ask for seat colours to move up.'},
+  retro:{t:'Sprint Retrospective',k:'Event',c:C.e,d:'The team inspects how it worked (people, interactions, process, tools, Definition of Done) and picks the most helpful improvements. Ends the sprint.',who:'Whole Scrum Team',time:'Max 3 h for a 1-month sprint',out:'Improvements, often added to the next Sprint Backlog',vas:'"The 20-point story didn\'t fit": split stories over 8 points next time.'},
+  pg:{t:'Product Goal',k:'Commitment',c:C.p,d:'The long-term objective for the product. The Product Backlog emerges to define what fulfils it. One at a time.',who:'Product Owner',time:'Until met or abandoned',out:'Direction for every sprint',vas:'A Get In app that lets show visitors explore and configure the Neo vehicle.'}};
+  const seq=['pb','ref','sp','sb','sprint','daily','inc','rev','retro'];let sel='pb',step=0,timer=null;
+  const pos={pb:[120,250],sp:[300,250],sb:[450,250],sprint:[680,250],daily:[680,128],inc:[905,250],rev:[905,430],retro:[680,452],ref:[120,410],pg:[120,92]};
+  function stack(x,y,c,lab){let g='';for(let i=3;i>=0;i--)g+=`<rect x="${x-58+i*5}" y="${y-48+i*7}" width="116" height="74" rx="8" fill="${C.sur}" stroke="${c}" stroke-width="2.5"/>`;return g+`<rect class="hl" x="${x-58}" y="${y-48}" width="116" height="74" rx="8" fill="${c}" stroke="none"/>`+T(x,y-10,lab[0],{s:15,w:700,f:'#fff'})+T(x,y+10,lab[1]||'',{s:15,w:700,f:'#fff'})}
+  function pill(x,y,c,l1,l2){return `<rect class="hl" x="${x-78}" y="${y-30}" width="156" height="60" rx="30" fill="${c}" stroke="${C.sur}" stroke-width="2"/>`+T(x,y-3,l1,{s:15,w:700,f:'#fff'})+T(x,y+15,l2||'',{s:12,f:'#fff'})}
+  function draw(){const W=1020,H=520;let g=`<defs><marker id="fa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5 0 10z" fill="${css('--muted')}"/></marker></defs>`;
+    const ar=(d)=>`<path d="${d}" stroke="${C.mut}" stroke-width="2.5" fill="none" marker-end="url(#fa)"/>`;
+    g+=ar('M182 250 L218 250')+ar('M380 250 L388 250')+ar('M512 250 L528 250')+ar('M832 250 L843 250')+ar('M905 285 L905 397')+ar('M825 445 L760 450')+`<path d="M600 455 C 420 500, 200 500, 128 300" stroke="${C.mut}" stroke-width="2.5" fill="none" stroke-dasharray="7 6" marker-end="url(#fa)"/>`+T(330,500,'Next sprint starts immediately',{s:13,f:C.mut});
+    g+=`<path d="M120 375 L120 305" stroke="${C.p}" stroke-width="2.5" stroke-dasharray="4 4" marker-end="url(#fa)"/>`;
+    const node=(k,inner)=>`<g class="click ${sel===k?'sel':''}" data-k="${k}" tabindex="0" role="button" aria-label="${esc(N[k].t)}">${inner}</g>`;
+    g+=node('pg',`<rect class="hl" x="40" y="66" width="160" height="52" rx="10" fill="none" stroke="${C.p}" stroke-width="2.5" stroke-dasharray="6 4"/>`+T(120,90,'Product Goal',{s:15,w:700,f:C.p})+T(120,108,'commitment',{s:12,f:C.mut}));
+    g+=`<line x1="120" y1="118" x2="120" y2="195" stroke="${C.p}" stroke-width="2" stroke-dasharray="3 4"/>`;
+    g+=node('pb',stack(120,250,C.a,['Product','Backlog']));
+    g+=node('ref',`<rect class="hl" x="40" y="380" width="160" height="56" rx="10" fill="${C.sun}" stroke="${C.p}" stroke-width="2"/>`+T(120,404,'Refinement',{s:15,w:700,f:C.p})+T(120,422,'ongoing',{s:12,f:C.mut}));
+    g+=node('sp',pill(300,250,C.e,'Sprint Planning',''));
+    g+=node('sb',stack(450,250,C.a,['Sprint','Backlog']));
+    g+=node('sprint',`<circle class="hl" cx="680" cy="250" r="150" fill="none" stroke="${C.e}" stroke-width="10" opacity=".9"/><path d="M800 160 l14 -2 -4 14" stroke="${C.e}" stroke-width="6" fill="none"/>`+T(680,262,'Sprint',{s:28,w:800,fam:'var(--font-d)',f:C.e})+T(680,288,'1 month or less',{s:14,f:C.mut})+T(680,306,'VAS: 2 weeks',{s:14,f:C.mut}));
+    g+=node('daily',`<circle class="hl" cx="680" cy="128" r="46" fill="${C.e}" stroke="${C.sur}" stroke-width="3"/><path d="M712 98 a38 38 0 1 1 -10 -8" stroke="#fff" stroke-width="2.5" fill="none"/>`+T(680,126,'Daily',{s:15,w:700,f:'#fff'})+T(680,144,'Scrum',{s:15,w:700,f:'#fff'}));
+    g+=T(680,62,'every 24 h, 15 min',{s:13,f:C.mut});
+    g+=node('inc',`<rect class="hl" x="848" y="205" width="116" height="80" rx="10" fill="${C.a}" stroke="${C.sur}" stroke-width="2"/><path d="M872 245 l18 18 32 -36" stroke="#fff" stroke-width="5" fill="none"/>`+T(906,300,'Increment',{s:15,w:700,f:C.a})+T(906,190,'Definition of Done',{s:13,f:C.mut}));
+    g+=node('rev',pill(905,430,C.e,'Sprint Review','with stakeholders'));
+    g+=node('retro',pill(680,452,C.e,'Retrospective','how we worked'));
+    g+=T(450,180,'Sprint Goal',{s:13,f:C.mut});
+    if(seq.includes(sel)){const [x,y]=pos[sel];g+=`<circle cx="${x}" cy="${y-(sel==='sprint'?150:sel==='daily'?52:56)}" r="9" fill="${C.ink}"><animate attributeName="r" values="9;13;9" dur="1.2s" repeatCount="indefinite"/></circle>`}
+    $('#fw-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Scrum framework diagram">${g}</svg>`;
+    document.querySelectorAll('#fw-svg .click').forEach(el=>{const go=()=>{sel=el.dataset.k;const i=seq.indexOf(sel);if(i>=0)step=i;stop();draw()};el.onclick=go;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
+    const n=N[sel];$('#fw-note').innerHTML=`<span class="tag" style="background:${n.c}">${n.k}</span><h3>${n.t}</h3><p>${esc(n.d)}</p><dl><dt>Who</dt><dd>${esc(n.who)}</dd><dt>Timebox</dt><dd>${esc(n.time)}</dd><dt>Produces</dt><dd>${esc(n.out)}</dd></dl><div class="vas" style="margin-top:12px"><b>Vangelis Auto Show</b>${esc(n.vas)}</div>`;
+    $('#fw-step').textContent=seq.includes(sel)?`Step ${seq.indexOf(sel)+1} of ${seq.length}`:''}
+  function stop(){if(timer){clearInterval(timer);timer=null;$('#fw-play').textContent='Play the loop'}}
+  const go=d=>{step=(step+d+seq.length)%seq.length;sel=seq[step];draw()};
+  $('#fw-next').onclick=()=>{stop();go(1)};$('#fw-prev').onclick=()=>{stop();go(-1)};
+  $('#fw-play').onclick=()=>{if(timer){stop();return}$('#fw-play').textContent='Pause';timer=setInterval(()=>go(1),reduce?2500:3200)};
+  draw()})();
+
+/* ---------- 05 team ---------- */
+(()=>{const R={po:['Product Owner',C.p,['Maximises the value of the product','Owns and orders the Product Backlog','Sets the Product Goal','One person, not a committee'],[['PO','To be named','#0d8a8c']]],sm:['Scrum Master',C.e,['Helps everyone understand Scrum','Removes impediments','Makes sure events happen and stay in their timebox','Coaches the team; a leader who serves'],[['NS','Nick Stekovic','#d98200']]],dev:['Developers',C.a,['Create a usable Increment each sprint','Own the Sprint Backlog and the plan','Hold each other to the Definition of Done','Decide how to do the work'],[['SP','Sandra Price','#b8327a'],['BS','Brent Smith','#2f62d6'],['MG','Momenti Go','#1d8256']]]};
+  const A=[['Orders the Product Backlog','po'],['Decides how to build a story','dev'],['Removes a blocker','sm'],['Sets the Sprint Goal','all'],['Accepts or rejects stakeholder ideas for the backlog','po'],['Runs the Daily Scrum','dev'],['Keeps events within their timebox','sm'],['Estimates story points','dev'],['Decides what "done" means','all'],['Owns the Sprint Backlog','dev']];
+  let sel=-1;
+  function draw(){$('#acts').innerHTML=A.map((a,k)=>`<button class="act ${sel===k?'on':''}" data-k="${k}">${esc(a[0])}</button>`).join('');
+    const who=sel<0?null:A[sel][1];
+    $('#roles').innerHTML=Object.entries(R).map(([k,[n,c,l,ppl]])=>{const lit=who&&(who===k||who==='all');return `<div class="role ${lit?'lit':''} ${who&&!lit?'dim':''}" style="border-color:${lit?c:'var(--line)'}"><h3 style="color:${c};font-size:24px">${n}</h3><ul>${l.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="who">${ppl.map(p=>`<span class="person"><i style="background:${p[2]}">${p[0]}</i>${esc(p[1])}</span>`).join('')}</div></div>`}).join('');
+    if(who==='all')$('#roles').insertAdjacentHTML('beforeend','');
+    document.querySelectorAll('.act').forEach(b=>b.onclick=()=>{sel=sel===+b.dataset.k?-1:+b.dataset.k;draw()})}
+  draw()})();
+
+/* ---------- 06 events ---------- */
+(()=>{let weeks=2,sel='plan';const MAX={plan:8,review:4,retro:3};
+  const E={plan:['Sprint Planning','First day. Why, what and how for this sprint.'],daily:['Daily Scrum','15 minutes, same time and place, every working day.'],review:['Sprint Review','Last day. Show the increment to stakeholders; adapt the backlog.'],retro:['Sprint Retrospective','After the review, before the next planning. Improve how the team works.'],refine:['Backlog refinement','An ongoing activity, not an event. Many teams set aside a regular slot mid-sprint.'],sprint:['The Sprint','Contains every other event. Fixed length; the next starts as soon as this one ends.']};
+  $('#ev-len').innerHTML=[1,2,3,4].map(n=>`<button data-n="${n}" class="${n===weeks?'on':''}">${n} week${n>1?'s':''}</button>`).join('');
+  $('#ev-len').onclick=e=>{const b=e.target.closest('button');if(!b)return;weeks=+b.dataset.n;[...$('#ev-len').children].forEach(x=>x.classList.toggle('on',x===b));draw()};
+  const hrs=k=>Math.round(MAX[k]*weeks/4*10)/10;
+  function draw(){const days=weeks*5,cols=5,rows=weeks,W=1000,cw=180,rh=118,x0=70,y0=56,H=y0+rows*rh+40;let g='';
+    ['Mon','Tue','Wed','Thu','Fri'].forEach((d,i)=>g+=T(x0+i*cw+cw/2,38,d,{s:14,w:700,f:C.mut}));
+    g+=`<g class="click ${sel==='sprint'?'sel':''}" data-k="sprint"><rect class="hl" x="${x0-8}" y="${y0-8}" width="${cols*cw+16}" height="${rows*rh+16}" rx="16" fill="none" stroke="${C.e}" stroke-width="4" stroke-dasharray="10 6"/></g>`;
+    for(let d=0;d<days;d++){const r=Math.floor(d/5),c=d%5,x=x0+c*cw,y=y0+r*rh;g+=`<rect x="${x+3}" y="${y+3}" width="${cw-6}" height="${rh-6}" rx="10" fill="${C.sun}"/>`+T(x+14,y+22,`Day ${d+1}`,{a:'start',s:13,f:C.mut});
+      g+=`<g class="click ${sel==='daily'?'sel':''}" data-k="daily"><rect class="hl" x="${x+cw-58}" y="${y+10}" width="46" height="20" rx="10" fill="${C.e}"/>${T(x+cw-35,y+24,'15m',{s:12,w:700,f:'#fff'})}</g>`;
+      if(d===0)g+=`<g class="click ${sel==='plan'?'sel':''}" data-k="plan"><rect class="hl" x="${x+10}" y="${y+40}" width="${cw-20}" height="${Math.min(66,20+hrs('plan')*6)}" rx="8" fill="${C.e}"/>${T(x+cw/2,y+64,'Planning',{s:14,w:700,f:'#fff'})}${T(x+cw/2,y+82,'≤ '+hrs('plan')+' h',{s:13,f:'#fff'})}</g>`;
+      if(d===days-1){g+=`<g class="click ${sel==='review'?'sel':''}" data-k="review"><rect class="hl" x="${x+10}" y="${y+38}" width="${cw-20}" height="34" rx="8" fill="${C.e}"/>${T(x+cw/2,y+60,'Review ≤ '+hrs('review')+' h',{s:13,w:700,f:'#fff'})}</g><g class="click ${sel==='retro'?'sel':''}" data-k="retro"><rect class="hl" x="${x+10}" y="${y+76}" width="${cw-20}" height="30" rx="8" fill="${C.t}"/>${T(x+cw/2,y+96,'Retro ≤ '+hrs('retro')+' h',{s:13,w:700,f:'#fff'})}</g>`}
+      if(d>0&&d<days-1&&(d%5===2))g+=`<g class="click ${sel==='refine'?'sel':''}" data-k="refine"><rect class="hl" x="${x+10}" y="${y+46}" width="${cw-20}" height="40" rx="8" fill="${C.sur}" stroke="${C.p}" stroke-width="2" stroke-dasharray="5 4"/>${T(x+cw/2,y+71,'Refinement',{s:13,w:700,f:C.p})}</g>`}
+    g+=T(x0,H-8,`Sprint: ${days} working days. The next sprint's planning is the following Monday.`,{a:'start',s:13,f:C.mut});
+    $('#ev-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sprint calendar with Scrum events">${g}</svg>`;
+    document.querySelectorAll('#ev-svg .click').forEach(el=>el.onclick=()=>{sel=el.dataset.k;draw()});
+    const e=E[sel];$('#ev-note').innerHTML=`<span class="tag" style="background:${sel==='refine'?css('--c-product'):sel==='retro'?css('--c-team'):css('--c-event')}">${sel==='refine'?'Activity':'Event'}</span><h3>${e[0]}</h3><p style="margin:0">${esc(e[1])}</p>`;
+    $('#ev-table').innerHTML=`<dl style="display:grid;grid-template-columns:1fr auto;gap:6px 14px;margin:0;font-size:15px"><dt>Sprint</dt><dd class="num" style="margin:0">${weeks} week${weeks>1?'s':''}</dd><dt>Sprint Planning</dt><dd class="num" style="margin:0">≤ ${hrs('plan')} h</dd><dt>Daily Scrum</dt><dd class="num" style="margin:0">15 min</dd><dt>Sprint Review</dt><dd class="num" style="margin:0">≤ ${hrs('review')} h</dd><dt>Retrospective</dt><dd class="num" style="margin:0">≤ ${hrs('retro')} h</dd></dl><p class="hint" style="margin:8px 0 0">One-month maximums: 8 h, 4 h and 3 h. Scaling them by sprint length is a common rule of thumb.</p>`}
+  draw()})();
+
+/* ---------- 07 artifacts ---------- */
+(()=>{const items=[['Navigation: previous page',3,'sb','inc'],['Neo Core Look & Feel spike',5,'sb','inc'],['Neo Core Audio System',20,'sb','pb'],['Screen saver',5,'pb',''],['Bose offerings',8,'pb',''],['Seats: type & colour',8,'pb',''],['Subscribe',3,'pb','']];let sel=2;
+  function draw(){const W=1020,H=420,cols=[['pb','Product Backlog','Product Goal',30],['sb','Sprint Backlog','Sprint Goal',370],['inc','Increment','Definition of Done',710]];let g='';
+    cols.forEach(([k,t,c,x])=>{g+=`<rect x="${x}" y="40" width="280" height="330" rx="16" fill="${C.sun}"/>`+T(x+140,72,t,{s:22,w:800,fam:'var(--font-d)',f:C.a})+`<rect x="${x+10}" y="${380-8}" width="260" height="36" rx="18" fill="${C.p}"/>`+T(x+140,395,'Commitment: '+c,{s:13,w:700,f:'#fff'})});
+    g+=`<path d="M318 205 l40 0" stroke="${C.mut}" stroke-width="3" marker-end="url(#aa)"/><path d="M658 205 l40 0" stroke="${C.mut}" stroke-width="3" marker-end="url(#aa)"/>`+T(338,195,'planning',{s:12,f:C.mut})+T(678,195,'done',{s:12,f:C.mut});
+    const at={pb:0,sb:0,inc:0};items.forEach((it,k)=>{const col=it[2]==='sb'&&it[3]==='inc'?'inc':it[2];const x={pb:30,sb:370,inc:710}[col],y=96+at[col]*44;at[col]++;
+      g+=`<g class="click ${sel===k?'sel':''}" data-k="${k}"><rect class="hl" x="${x+16}" y="${y}" width="248" height="36" rx="8" fill="${C.sur}" stroke="${col==='inc'?C.good:C.line}" stroke-width="2"/>${T(x+28,y+23,it[0],{a:'start',s:14})}${T(x+250,y+23,String(it[1]),{a:'end',s:13,w:700,f:C.mut})}</g>`});
+    $('#art-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H+20}" role="img" aria-label="Artifacts and commitments"><defs><marker id="aa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5 0 10z" fill="${css('--muted')}"/></marker></defs>${g}</svg>`;
+    document.querySelectorAll('#art-svg .click').forEach(el=>el.onclick=()=>{sel=+el.dataset.k;draw()});
+    const it=items[sel];const msg=it[3]==='inc'?`<b>Done.</b> It met the Definition of Done (creative, copy, specs, unit testing, QA, UAT, deployed), so it's part of the sprint's Increment.`:it[3]==='pb'?`<b>Not done.</b> It was in the Sprint Backlog but didn't meet the Definition of Done by the end of the sprint, so it goes back to the Product Backlog. Unfinished work is never part of the Increment.`:`<b>Still in the Product Backlog.</b> It waits, ordered by the Product Owner, until a sprint planning selects it.`;
+    $('#art-note').innerHTML=`<h3>${esc(it[0])} · ${it[1]} pts</h3><p style="margin:0">${msg}</p>`}
+  draw()})();
+
+/* ---------- 08 story map ---------- */
+(()=>{const map=[['Navigation',['Navigate through the app','Previous page','Breadcrumbs','Search screens']],['Main screen',['Feature tiles','Neo hero video','Language switch']],['Screen saver',['Idle screen saver','Branded animation','Touch to wake']],['Audio System',['Neo Core','Bose offerings','Neo Premium','Pick a system']],['Seats',['Seat types','Material','Seat colour']],['Test drive',['Book a test drive','Pick a time']],['Share',['Share by email','QR code']],['Subscribe',['Subscribe for info','Newsletter opt-in']]];
+  function draw(){const cut=+$('#sm-cut').value;const W=1210,cw=124,x0=20,y0=20,rh=52,rows=4,H=y0+70+rows*rh+40;let g='';let n=0,tot=0;
+    map.forEach(([e,ss],i)=>{const x=x0+i*cw;g+=`<rect x="${x+3}" y="${y0}" width="${cw-6}" height="52" rx="8" fill="${C.ink}"/>`+T(x+cw/2,y0+31,e,{s:14,w:700,f:'var(--bg)'});
+      ss.forEach((s,r)=>{const y=y0+70+r*rh,inR=r<cut;tot++;if(inR)n++;g+=`<rect x="${x+6}" y="${y}" width="${cw-12}" height="${rh-8}" rx="7" fill="${inR?'var(--warn-soft)':C.sur}" stroke="${inR?C.e:C.line}" stroke-width="2"/>`;const words=s.split(' ');const l1=words.slice(0,2).join(' '),l2=words.slice(2).join(' ');g+=T(x+cw/2,y+(l2?18:26),l1,{s:12.5})+(l2?T(x+cw/2,y+34,l2,{s:12.5}):'')})});
+    const ly=y0+70+cut*rh-4;g+=`<line x1="10" x2="${W-10}" y1="${ly}" y2="${ly}" stroke="${C.e}" stroke-width="3.5" stroke-dasharray="10 6"/>`+`<rect x="${W-190}" y="${ly-13}" width="180" height="26" rx="13" fill="${C.e}"/>`+T(W-100,ly+5,'▲ Release 1  ▼ Release 2 - MVP',{s:12.5,w:700,f:'#fff'});
+    g+=T(14,H-8,'← user journey (backbone of epics) →',{a:'start',s:13,f:C.mut});
+    $('#sm-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Story map with release line">${g}</svg>`;$('#sm-read').textContent=`${n} of ${tot} stories in Release 1`}
+  $('#sm-cut').oninput=draw;draw();
+  const tr=[['Epic','Audio System',0,C.p],['Story','Neo Core Audio System',1,C.a],['Story','Look & Feel spike',1,C.a],['Sub-task','Write copy for the screen',2,C.mut],['Sub-task','Build the screen',2,C.mut],['Task','Research spike for audio systems',1,'var(--c-team)']];
+  let g='';tr.forEach(([k,t,d,c],i)=>{const x=10+d*26,y=10+i*40;if(d)g+=`<path d="M${x-14} ${y-14} L${x-14} ${y+16} L${x-2} ${y+16}" stroke="${C.line}" stroke-width="2" fill="none"/>`;g+=`<rect x="${x}" y="${y}" width="${300-x}" height="32" rx="7" fill="${C.sun}"/><rect x="${x}" y="${y}" width="6" height="32" rx="3" fill="${c}"/>`+T(x+14,y+21,k,{a:'start',s:12,w:700,f:c})+T(x+80,y+21,t,{a:'start',s:13})});
+  $('#tree-svg').innerHTML=`<svg viewBox="0 0 310 ${tr.length*40+14}" role="img" aria-label="Issue hierarchy">${g}</svg>`})();
+
+/* ---------- 09 stories ---------- */
+(()=>{const I=[['I','Independent','Can be built and released without waiting for another story.','"Pick a seat colour" works on its own.','"Seat colour, part 2 (needs part 1)"'],['N','Negotiable','A conversation starter, not a fixed contract; details are agreed with the team.','"Show audio options" — layout to be discussed.','"Use a 3-column grid, 14px Arial, #333"'],['V','Valuable','Delivers something a user or the business cares about.','"Compare Bose and Neo Core speakers"','"Refactor the CSS"'],['E','Estimable','The team understands it well enough to size it.','"Previous page button" — 3 points.','"Make the app great"'],['S','Small','Fits comfortably inside one sprint.','"Navigate to the previous page"','"Build the whole Audio System"'],['T','Testable','Clear acceptance criteria say when it\'s done.','"Given… when… then…" criteria attached.','"The screen should feel premium"']];let sel=0;
+  function card(){const r=$('#us-role').value.trim()||'…',g=$('#us-goal').value.trim()||'…',w=$('#us-why').value.trim()||'…';$('#us-card').innerHTML=`<b style="color:var(--c-product)">As a</b> <em style="background:var(--accent-soft)">${esc(r)}</em>, <b style="color:var(--c-event)">I would like</b> <em style="background:var(--warn-soft)">${esc(g)}</em>, <b style="color:var(--c-artifact)">so that</b> <em style="background:var(--good-soft)">${esc(w)}</em>.<div class="hint" style="margin-top:8px">Who · what · why. The "why" is what lets the team suggest a better solution.</div>`}
+  function inv(){$('#invest').innerHTML=I.map((x,k)=>`<button class="inv ${sel===k?'on':''}" data-k="${k}"><b>${x[0]}</b><span>${x[1]}</span></button>`).join('');const x=I[sel];$('#inv-note').innerHTML=`<h3>${x[1]}</h3><p>${esc(x[2])}</p><div class="two" style="gap:10px"><div style="background:var(--good-soft);border-radius:10px;padding:8px 12px;font-size:15px"><b style="color:var(--good)">Good</b><br>${esc(x[3])}</div><div style="background:var(--bad-soft);border-radius:10px;padding:8px 12px;font-size:15px"><b style="color:var(--bad)">Not quite</b><br>${esc(x[4])}</div></div>`;document.querySelectorAll('.inv').forEach(b=>b.onclick=()=>{sel=+b.dataset.k;inv()})}
+  ['#us-role','#us-goal','#us-why'].forEach(s=>$(s).oninput=card);card();inv()})();
+
+/* ---------- 10 estimation ---------- */
+(()=>{const F=[1,2,3,5,8,13,20,40,100];const D={1:'Tiny and well understood. A label change.',2:'Small. Change the order of the main menu.',3:'The reference size. "Navigate to the previous page."',5:'Some unknowns. The Look & Feel spike.',8:'Sizeable; still fits a sprint. Bose offerings screen.',13:'Big. Consider splitting before planning.',20:'Too big for one sprint in most teams. Neo Core Audio System (design plus development).',40:'An epic in disguise. Split it.',100:'"Huge, we have no idea." Break it down first.'};let sel=3;
+  function draw(){$('#fibs').innerHTML=F.map(v=>{const h=Math.round(56+Math.sqrt(v)*15),w=Math.round(h*.7);return `<button class="fcard ${v===sel?'on':''}" data-v="${v}" style="width:${w}px;height:${h}px;font-size:${Math.round(16+Math.sqrt(v)*2.4)}px" aria-label="${v} points">${v}</button>`}).join('');const k=F.indexOf(sel);$('#fib-note').innerHTML=`<h3>${sel} point${sel>1?'s':''}${sel===3?' · reference story':''}</h3><p style="margin:0">${esc(D[sel])}${sel!==3?` That's about ${Math.round(sel/3*10)/10}× the reference story.`:''}</p>`;document.querySelectorAll('.fcard').forEach(b=>b.onclick=()=>{sel=+b.dataset.v;draw()})}
+  draw();
+  const team=['Sandra','Brent','Momenti','Nick'];let votes=[],shown=false,round=0;
+  const deal=()=>{round++;const base=4;votes=team.map(()=>{const r=Math.random();let d=round===1?(r<.2?-2:r<.45?-1:r<.65?1:r<.78?2:0):(r<.15?-1:r<.3?1:0);return F[Math.max(0,Math.min(6,base+d))]});shown=false;pk()};
+  function pk(){$('#pk').innerHTML=team.map((n,k)=>`<div class="pk"><div class="c ${shown?'':'down'}">${votes[k]||''}</div>${n}</div>`).join('');if(!votes.length){$('#pk-msg').textContent='Estimating "Bose offerings screen".';return}if(!shown){$('#pk-msg').textContent='Cards are face down. Reveal them together.';return}const lo=Math.min(...votes),hi=Math.max(...votes);const spread=F.indexOf(hi)-F.indexOf(lo);$('#pk-msg').innerHTML=spread>=2?`<b>${lo} to ${hi}</b>: big spread. ${team[votes.indexOf(lo)]} and ${team[votes.indexOf(hi)]} explain their thinking, then deal again.`:`<b>Close enough.</b> The team agrees on ${[...votes].sort((a,b)=>a-b)[Math.floor(votes.length/2)]} points.`}
+  $('#pk-deal').onclick=()=>{if(shown){const lo=Math.min(...votes),hi=Math.max(...votes);if(F.indexOf(hi)-F.indexOf(lo)<2)round=0}deal()};$('#pk-reveal').onclick=()=>{if(votes.length){shown=true;pk()}};pk()})();
+
+/* ---------- 11 velocity ---------- */
+(()=>{const v=[18,24,21,27,25,26];
+  function draw(){const W=640,H=300,x0=50,bw=60,gap=30,base=250,top=30,max=40,y=n=>base-(base-top)*n/max;let g='';
+    for(let n=0;n<=max;n+=10)g+=`<line x1="${x0}" x2="${x0+v.length*(bw+gap)}" y1="${y(n)}" y2="${y(n)}" stroke="${C.line}"/>`+T(x0-8,y(n)+4,String(n),{a:'end',s:12,f:C.mut});
+    const avg=v.slice(-3).reduce((a,b)=>a+b,0)/3;
+    v.forEach((n,k)=>{const x=x0+gap/2+k*(bw+gap);g+=`<rect x="${x}" y="${y(n)}" width="${bw}" height="${base-y(n)}" rx="6" fill="${k>=v.length-3?C.p:C.line}"/>`+T(x+bw/2,y(n)-8,String(n),{s:14,w:700})+T(x+bw/2,base+18,'S'+(k+1),{s:13,f:C.mut})+`<g class="click" data-k="${k}" data-d="1"><rect x="${x}" y="${base+26}" width="28" height="22" rx="5" fill="${C.sun}"/>${T(x+14,base+42,'+',{s:15,w:700})}</g><g class="click" data-k="${k}" data-d="-1"><rect x="${x+32}" y="${base+26}" width="28" height="22" rx="5" fill="${C.sun}"/>${T(x+46,base+42,'−',{s:15,w:700})}</g>`});
+    g+=`<line x1="${x0}" x2="${x0+v.length*(bw+gap)}" y1="${y(avg)}" y2="${y(avg)}" stroke="${C.e}" stroke-width="2.5" stroke-dasharray="7 5"/>`+T(x0+v.length*(bw+gap)+4,y(avg)+4,'avg '+Math.round(avg),{a:'start',s:13,w:700,f:C.e});
+    $('#vel-svg').innerHTML=`<svg viewBox="0 0 ${W+60} ${H+20}" role="img" aria-label="Velocity per sprint">${g}</svg>`;
+    document.querySelectorAll('#vel-svg .click').forEach(el=>el.onclick=()=>{const k=+el.dataset.k;v[k]=Math.max(2,Math.min(40,v[k]+ +el.dataset.d*2));draw()});
+    const bl=+$('#vel-bl').value;$('#vel-blv').textContent=bl;const last=v.slice(-3),lo=Math.min(...last),hi=Math.max(...last);const best=Math.ceil(bl/hi),worst=Math.ceil(bl/lo),mid=Math.ceil(bl/avg);
+    const date=n=>{const d=new Date(Date.UTC(2019,6,1+(6+n)*14));return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})};
+    $('#vel-read').innerHTML=`<div class="stat"><b>${Math.round(avg)}</b><span>average of last 3 sprints</span></div><div class="stat"><b>${best}–${worst}</b><span>sprints still needed</span></div><div class="stat" style="min-width:200px"><b style="font-size:20px">${date(best)} – ${date(worst)}</b><span>likely finish (2-week sprints after S6)</span></div>`}
+  $('#vel-bl').oninput=draw;draw()})();
+
+/* ---------- 12 board flow ---------- */
+(()=>{const COLS=['Backlog','Current Sprint Backlog','Blocked','Design','Development','Unit Testing','QA','UAT','Done'];let cards,day,timer=null;
+  const reset=()=>{cards=Array.from({length:9},(_,k)=>({id:k,col:1,p:0,need:[1,2,1,3,2,1,2,1,2][k]}));cards.push({id:9,col:0,p:0,need:2},{id:10,col:0,p:0,need:2});day=0;draw()};
+  const W=1040,cw=W/9;
+  function stepDay(){day++;const wip=$('#fl-wip').checked;const need=(c,col)=>col===4?c.need:1;const cap=col=>col===4&&wip?2:col===3?2:99;
+    cards.forEach(c=>c.moved=false);
+    for(let col=7;col>=3;col--){cards.filter(c=>c.col===col&&!c.moved&&c.p>=need(c,col)).forEach(c=>{const to=col+1;if(cards.filter(x=>x.col===to).length<cap(to)){c.col=to;c.p=0;c.moved=true}})}
+    if(day===6)cards.filter(c=>c.col===2).forEach(c=>{c.col=c.back||4;c.moved=true});
+    cards.filter(c=>c.col===1).forEach(c=>{if(cards.filter(x=>x.col===3).length<cap(3)){c.col=3;c.p=0;c.moved=true}});
+    cards.forEach(c=>{if(c.col<3||c.col>7)return;if(c.col===6){if(cards.filter(x=>x.col===6)[0]===c)c.p++}else c.p++});
+    if(day===3){const bl=cards.find(c=>c.col===4);if(bl){bl.col=2;bl.back=4}}
+    draw();if(day>=10||cards.filter(c=>c.col>0).every(c=>c.col===8)){clearInterval(timer);timer=null;$('#fl-play').textContent='Play'}}
+  function draw(){const H=380;let g='';COLS.forEach((n,i)=>{const x=i*cw;const lim=i===4&&$('#fl-wip').checked;g+=`<rect x="${x+3}" y="0" width="${cw-6}" height="${H}" rx="10" fill="${i===2?'var(--bad-soft)':C.sun}"/>`;const w=n.split(' ');g+=T(x+cw/2,22,w.length>2?w.slice(0,2).join(' '):n,{s:12.5,w:700,f:C.mut})+(w.length>2?T(x+cw/2,38,w.slice(2).join(' '),{s:12.5,w:700,f:C.mut}):'');if(lim)g+=T(x+cw/2,56,'WIP limit 2',{s:12,w:700,f:C.e});const cs=cards.filter(c=>c.col===i);cs.forEach((c,k)=>{const y=66+k*32;if(y>H-30)return;g+=`<rect x="${x+12}" y="${y}" width="${cw-24}" height="26" rx="6" fill="${C.sur}" stroke="${i===8?C.good:i===2?C.bad:C.line}" stroke-width="2" style="transition:all .4s"/>`+T(x+24,y+18,'VAS-'+(10+c.id),{a:'start',s:12,w:700})});if(i===6&&cs.length>2)g+=T(x+cw/2,H-12,`queue: ${cs.length-1} waiting`,{s:12,w:700,f:C.bad})});
+    $('#fl-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Board flow on day ${day}">${g}</svg>`;$('#fl-day').textContent=`Day ${day} of 10`}
+  $('#fl-play').onclick=()=>{if(timer){clearInterval(timer);timer=null;$('#fl-play').textContent='Play';return}if(day>=10)reset();$('#fl-play').textContent='Pause';timer=setInterval(stepDay,reduce?300:900)};
+  $('#fl-reset').onclick=()=>{clearInterval(timer);timer=null;$('#fl-play').textContent='Play';reset()};$('#fl-wip').onchange=draw;reset()})();
+
+/* ---------- 13 burndown ---------- */
+(()=>{const S={healthy:['Healthy',[30,28,26,23,20,17,14,10,7,3,0],'Remaining work drops steadily, a little above or below the ideal line. The team finishes stories continuously and meets the sprint goal.'],scope:['Scope creep',[30,28,26,31,29,27,30,26,22,18,14],'The line jumps up when work is added mid-sprint (day 3 and day 6). In Jira you see "Sprint scope will be affected". Protect the sprint goal; put new requests in the backlog.'],late:['Hockey stick',[30,30,30,30,29,29,28,22,12,5,0],'Flat for a week, then a cliff. Stories were worked on in parallel and only reached Done at the end: too much in progress at once, or stories too big. Finish one before starting the next.'],stuck:['Stuck',[30,30,30,29,29,29,29,28,28,28,27],'Almost nothing reaches Done. Look for blockers, hidden dependencies or a 20-point story that should have been split. Raise it at the Daily Scrum, not at the review.'],early:['Under-committed',[16,14,11,8,5,2,0,0,0,0,0],'Done by day 6. Pull the next item from the backlog with the Product Owner, and use real velocity to plan more next sprint.']};let k='healthy';
+  $('#bd-seg').innerHTML=Object.entries(S).map(([key,v])=>`<button data-k="${key}" class="${key===k?'on':''}">${v[0]}</button>`).join('');
+  $('#bd-seg').onclick=e=>{const b=e.target.closest('button');if(!b)return;k=b.dataset.k;[...$('#bd-seg').children].forEach(x=>x.classList.toggle('on',x===b));draw()};
+  function draw(){const W=760,H=360,x0=50,x1=730,y0=20,y1=310,max=35,x=d=>x0+(x1-x0)*d/10,y=v=>y1-(y1-y0)*v/max;const s=S[k];let g='';
+    for(let v=0;v<=max;v+=5)g+=`<line x1="${x0}" x2="${x1}" y1="${y(v)}" y2="${y(v)}" stroke="${C.line}"/>`+T(x0-8,y(v)+4,String(v),{a:'end',s:12,f:C.mut});
+    for(let d=0;d<=10;d++)g+=T(x(d),y1+20,d===0?'Day 0':String(d),{s:12,f:C.mut});
+    g+=`<line x1="${x(0)}" y1="${y(s[1][0])}" x2="${x(10)}" y2="${y(0)}" stroke="${C.mut}" stroke-width="2" stroke-dasharray="6 6"/>`;
+    const pts=s[1].map((v,d)=>`${x(d)},${y(v)}`).join(' ');g+=`<polygon points="${x(0)},${y1} ${pts} ${x(10)},${y1}" fill="${C.acc}" opacity=".1"/><polyline points="${pts}" stroke="${C.acc}" stroke-width="3.5" fill="none" stroke-linejoin="round"/>`+s[1].map((v,d)=>`<circle cx="${x(d)}" cy="${y(v)}" r="4.5" fill="${C.acc}"/>`).join('');
+    s[1].forEach((v,d)=>{if(d&&v>s[1][d-1])g+=`<line x1="${x(d)}" x2="${x(d)}" y1="${y0}" y2="${y1}" stroke="${C.e}" stroke-width="2" stroke-dasharray="3 4"/>`+T(x(d)+4,y0+14,'scope added',{a:'start',s:12,w:700,f:C.e})});
+    g+=T(x1,y0+4,'— ideal',{a:'end',s:13,f:C.mut});
+    $('#bd-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Burndown: ${s[0]}">${g}</svg>`;$('#bd-note').innerHTML=`<h3>${s[0]}</h3><p style="margin:0">${esc(s[2])}</p>`}
+  draw()})();
+
+/* ---------- 14 release ---------- */
+(()=>{const F=[['Architecture',1],['Navigation',2],['Main screen',3],['Screen saver',3],['Test drive',4],['Share',5],['Subscribe',5],['Audio System',7],['Seats',10],['Video System',12],['Climate',13],['Dashboard',15],['Park monitoring',16],['Sunroof',18],['Drive features',19],['Transmission',20]];
+  function draw(){const s=+$('#rl-s').value;$('#rl-n').textContent=s;const W=1000,H=460;let g='';const x=k=>40+k*46;
+    for(let k=1;k<=20;k++){const done=k<=s;g+=`<rect x="${x(k-1)}" y="30" width="42" height="36" rx="6" fill="${done?(k<=7?C.e:C.p):C.sun}"/>`+T(x(k-1)+21,53,String(k),{s:13,w:700,f:done?'#fff':C.mut})}
+    g+=`<line x1="${x(7)-2}" x2="${x(7)-2}" y1="20" y2="84" stroke="${C.ink}" stroke-width="3"/>`+T(x(0),98,'Release 1 · 1 Jul – 4 Oct 2019 · Get In bare bones',{a:'start',s:13,w:700,f:C.e})+T(x(20),98,'Release 2 - MVP · 7 Oct 2019 – 10 Apr 2020',{a:'end',s:13,w:700,f:C.p});
+    // phone mock with feature tiles
+    const px=330,py=120,pw=340,ph=320;g+=`<rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="26" fill="${C.ink}"/><rect x="${px+14}" y="${py+16}" width="${pw-28}" height="${ph-32}" rx="14" fill="var(--bg)"/>`+T(px+pw/2,py+44,'Neo Get In',{s:18,w:800,fam:'var(--font-d)'});
+    F.forEach(([n,sp],i)=>{const c=i%4,r=Math.floor(i/4),tx=px+26+c*74,ty=py+60+r*62,on=s>=sp;g+=`<rect x="${tx}" y="${ty}" width="66" height="54" rx="9" fill="${on?(sp<=7?C.e:C.p):'none'}" stroke="${on?'none':C.line}" stroke-width="2" stroke-dasharray="${on?'0':'4 4'}"/>`;const w=n.split(' ');g+=T(tx+33,ty+(w.length>1?24:32),w[0],{s:11.5,w:700,f:on?'#fff':C.mut})+(w.length>1?T(tx+33,ty+39,w[1],{s:11.5,w:700,f:on?'#fff':C.mut}):'')});
+    const built=F.filter(f=>s>=f[1]).length;g+=T(150,250,String(built),{s:64,w:800,fam:'var(--font-d)'})+T(150,280,'features working',{s:15,f:C.mut})+T(850,250,s<=7?'R1':'R2',{s:64,w:800,fam:'var(--font-d)',f:s<=7?C.e:C.p})+T(850,280,s===0?'nothing yet':s<7?'building Release 1':s===7?'Release 1 ships':s<20?'building the MVP':'MVP ships',{s:15,f:C.mut});
+    $('#rl-svg').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Release plan after sprint ${s}">${g}</svg>`;
+    $('#rl-note').innerHTML=s===0?'<h3>Before Sprint 1</h3><p style="margin:0">Only the backlog and the plan exist.</p>':`<h3>After sprint ${s}</h3><p style="margin:0">Each sprint ends with a usable, tested Increment, even if it isn't released to users yet. ${s<7?'Release 1 bundles the first 7 sprints.':s===7?'Release 1 goes out: architecture, navigation, main screen, screen saver, test drive, share, subscribe and audio system.':'Every sprint adds to the MVP until it ships after sprint 20.'}</p>`}
+  $('#rl-s').oninput=draw;draw()})();
+
+/* ---------- 15 quiz ---------- */
+(()=>{const Q=[['Who orders the Product Backlog?',['The Scrum Master','The Product Owner','The Developers','The stakeholders'],1,'The Product Owner is accountable for ordering it, even when others help write items.'],['How long is the Daily Scrum?',['15 minutes','30 minutes','As long as needed','1 hour'],0,'15 minutes, every working day, for the Developers.'],['Which is NOT one of the five Scrum events?',['Sprint Review','Sprint Retrospective','Backlog refinement','Daily Scrum'],2,'Refinement is an ongoing activity. The events are the Sprint, Planning, Daily Scrum, Review and Retrospective.'],['What is the commitment for the Increment?',['The Sprint Goal','The Product Goal','The Definition of Done','The release date'],2,'An item only becomes part of the Increment when it meets the Definition of Done.'],['A story isn\'t done at the end of the sprint. What happens?',['It counts as half done','The sprint is extended','It goes back to the Product Backlog','It is deleted'],2,'Unfinished work returns to the Product Backlog and doesn\'t count toward velocity.'],['In the course, what gets no story points?',['Stories','Bugs','Tasks','Epics with a summary'],2,'"In Jira you should not be assigning story points to a task" (JiraTutorial3).'],['What does a burndown that jumps upward mid-sprint mean?',['The team worked faster','Work was added to the sprint','The sprint goal was met','Velocity improved'],1,'Scope was added. Jira warns that sprint scope will be affected.'],['Which pillar is about seeing the real state of the work?',['Adaptation','Inspection','Transparency','Commitment'],2,'Transparency: the board, backlog and Definition of Done are visible to all.']];const ans=Q.map(()=>-1);
+  function draw(){$('#qz').innerHTML=Q.map((q,k)=>`<div class="q"><h3>${k+1}. ${esc(q[0])}</h3><div class="opts">${q[1].map((o,i)=>{const cls=ans[k]<0?'':i===q[2]?'right':i===ans[k]?'wrong':'';return `<button class="opt ${cls}" data-k="${k}" data-i="${i}" ${ans[k]>=0?'disabled':''}>${esc(o)}</button>`}).join('')}</div>${ans[k]>=0?`<div class="why"><b>${ans[k]===q[2]?'Right.':'Not quite.'}</b> ${esc(q[3])}</div>`:''}</div>`).join('');$('#qz-score').textContent=`${ans.filter((a,k)=>a===Q[k][2]).length} / ${Q.length}`;document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ans[+b.dataset.k]=+b.dataset.i;draw()})}
+  draw()})();
+</script>
+</body>
+</html>
