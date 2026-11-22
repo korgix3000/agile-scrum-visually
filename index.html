@@ -289,26 +289,14 @@ footer{max-width:1500px;margin:0 auto;padding:0 20px 70px;color:var(--muted);fon
   <p class="hint" style="margin-top:12px">Job titles are not accountabilities: Sandra (business analyst), Brent (UX/IA) and Momenti (front-end) are all Developers in Scrum terms. Stakeholders are outside the Scrum Team; they take part in the Sprint Review.</p>
 </section>
 
-<section class="chap" id="events" data-title="Events">
-  <div class="chap-head"><span class="chap-n">06</span><h2>The five events on a sprint calendar</h2><p>The Sprint is the container; the other four events happen inside it. Change the sprint length to see how the timeboxes scale.</p></div>
-  <div class="stage"><div class="canvas"><div class="ctrl"><label>Sprint length</label><div class="seg" id="ev-len"></div><span class="hint">Maximum timeboxes from the Scrum Guide are for a one-month sprint; shorter sprints usually need less.</span></div><div class="svgwrap" id="ev-svg"></div></div>
-  <div class="side"><div class="panel" id="ev-note"></div><div class="panel"><h3>Timeboxes at this length</h3><div id="ev-table"></div></div></div></div>
-</section>
-
-<section class="chap" id="artifacts" data-title="Artifacts">
-  <div class="chap-head"><span class="chap-n">07</span><h2>Three artifacts, three commitments</h2><p>Each artifact has a commitment that says what it's for. Work flows left to right; click an item to see where it ends up.</p></div>
-  <div class="canvas"><div class="svgwrap" id="art-svg"></div></div>
-  <div class="two" style="margin-top:14px"><div class="panel" id="art-note"></div><div class="vas"><b>Vangelis Auto Show</b><p style="margin:4px 0">Product Goal: a Get In app that lets show visitors explore and configure the Neo vehicle.</p><p style="margin:0">Sprint Goal (VAS Sprint 1): Navigation Completion; Screen Saver Look &amp; Feel.</p></div></div>
-</section>
-
 <section class="chap" id="backlog" data-title="Backlog & story map">
-  <div class="chap-head"><span class="chap-n">08</span><h2>From epics to a story map with release lines</h2><p>Epics are the backbone across the top; stories hang below in priority order. Drag the slider to move the release line and see what's in Release 1.</p></div>
+  <div class="chap-head"><span class="chap-n">06</span><h2>From epics to a story map with release lines</h2><p>Epics are the backbone across the top; stories hang below in priority order. Drag the slider to move the release line and see what's in Release 1.</p></div>
   <div class="stage"><div class="canvas"><div class="ctrl"><label for="sm-cut">Release 1 line</label><input id="sm-cut" type="range" min="1" max="4" value="2" style="max-width:300px"><span class="hint" id="sm-read"></span></div><div class="svgwrap" id="sm-svg"></div></div>
   <div class="side"><div class="panel"><h3>The hierarchy</h3><div class="svgwrap" id="tree-svg"></div><p class="hint" style="margin-top:8px">In Jira everything is an issue. Tasks and sub-tasks are steps of work; they don't get story points.</p></div><div class="panel" id="sm-note"><h3>Story mapping</h3><p>The team builds the map in a workshop: the user's journey left to right, detail top to bottom. Slicing it horizontally gives releases that each work end to end.</p></div></div></div>
 </section>
 
 <section class="chap" id="stories" data-title="User stories">
-  <div class="chap-head"><span class="chap-n">09</span><h2>Anatomy of a good user story</h2><p>Type into the three parts to build a story, then check it against INVEST. Click a letter to see a good and a bad example.</p></div>
+  <div class="chap-head"><span class="chap-n">07</span><h2>Anatomy of a good user story</h2><p>Type into the three parts to build a story, then check it against INVEST. Click a letter to see a good and a bad example.</p></div>
   <div class="stage"><div class="canvas">
     <div class="two"><label>As a…<input type="text" id="us-role" value="Neo vehicle enthusiast"></label><label>I would like…<input type="text" id="us-goal" value="to understand what Neo Core Audio System offerings are available"></label></div>
     <label style="display:block;margin-top:10px">so that…<input type="text" id="us-why" value="I can be better informed what type of speakers and amp are available"></label>
@@ -320,18 +308,30 @@ footer{max-width:1500px;margin:0 auto;padding:0 20px 70px;color:var(--muted);fon
   <div class="panel"><h3>Ready vs Done</h3><div class="two" style="gap:10px"><div><b style="font-size:14px">Definition of Ready (team practice)</b><ul class="check"><li>Story format</li><li>Acceptance criteria</li><li>Estimated</li><li>Fits in a sprint</li></ul></div><div><b style="font-size:14px">Definition of Done (Scrum commitment)</b><ul class="check"><li>Creative, copy, specs</li><li>Unit tested, QA, UAT</li><li>Deployed to production</li></ul></div></div></div></div></div>
 </section>
 
+<section class="chap" id="release" data-title="Releases & MVP">
+  <div class="chap-head"><span class="chap-n">08</span><h2>Increments add up to releases</h2><p>Drag through the 20 sprints of the release plan. Each sprint adds a working slice to the Get In app; Release 1 and Release 2 (the MVP) bundle them for users.</p></div>
+  <div class="stage"><div class="canvas"><div class="ctrl"><label for="rl-s">After sprint <span id="rl-n" class="num"></span></label><input id="rl-s" type="range" min="0" max="20" value="7" style="max-width:520px"></div><div class="svgwrap" id="rl-svg"></div></div>
+  <div class="side"><div class="panel" id="rl-note"></div><div class="panel"><h3>MVP</h3><p style="margin:0">A minimum viable product is the smallest version people can actually use and learn from. In the course, Release 1 is bare bones; Release 2 is treated as the MVP because it's the first one with enough features to really try out.</p></div></div></div>
+</section>
+
 <section class="chap" id="estimation" data-title="Estimation">
-  <div class="chap-head"><span class="chap-n">10</span><h2>Story points: size by comparison</h2><p>Points measure effort, complexity and uncertainty relative to a reference story, not hours. The gaps widen because bigger work is less certain. Click a card.</p></div>
+  <div class="chap-head"><span class="chap-n">09</span><h2>Story points: size by comparison</h2><p>Points measure effort, complexity and uncertainty relative to a reference story, not hours. The gaps widen because bigger work is less certain. Click a card.</p></div>
   <div class="stage"><div class="canvas"><div class="fibs" id="fibs"></div><div class="panel" id="fib-note" style="margin-top:14px"></div>
     <h3 style="margin-top:18px">Planning poker</h3><p class="hint">Everyone picks a card at once, so nobody anchors on the first number said aloud.</p>
     <div class="ctrl"><button class="btn primary sm" id="pk-deal">Deal a round</button><button class="btn sm" id="pk-reveal">Reveal</button><span id="pk-msg" class="hint"></span></div><div class="poker" id="pk"></div></div>
   <div class="side"><div class="vas"><b>From JiraTutorial2</b>Look &amp; Feel spike: 5 points. Neo Core Audio System: 20 points, because design plus development is more complex. Tasks such as the research spike for audio systems get no points.</div><div class="panel"><h3>Why not hours?</h3><p style="margin:0">People disagree on hours but agree surprisingly well on "about twice as big as that one". Comparing is faster, and it stays true whoever ends up doing the work.</p></div></div></div>
 </section>
 
-<section class="chap" id="velocity" data-title="Velocity & forecast">
-  <div class="chap-head"><span class="chap-n">11</span><h2>Velocity turns points into a forecast</h2><p>Velocity is the points a team completes per sprint. Click a bar's + or − to change a sprint, then move the backlog slider to see how many sprints remain.</p></div>
-  <div class="stage"><div class="canvas"><div class="svgwrap" id="vel-svg"></div><div class="ctrl" style="margin-top:12px"><label for="vel-bl">Points left in the backlog: <span id="vel-blv" class="num"></span></label><input id="vel-bl" type="range" min="20" max="400" step="10" value="180" style="max-width:420px"></div></div>
-  <div class="side"><div class="read" style="margin:0" id="vel-read"></div><div class="panel"><h3>A range, not a promise</h3><p>Use the slowest and fastest recent sprints to give a range. Velocity settles after 3 or 4 sprints. It's a planning tool for one team, never a target or a way to compare teams.</p></div></div></div>
+<section class="chap" id="artifacts" data-title="Artifacts">
+  <div class="chap-head"><span class="chap-n">10</span><h2>Three artifacts, three commitments</h2><p>Each artifact has a commitment that says what it's for. Work flows left to right; click an item to see where it ends up.</p></div>
+  <div class="canvas"><div class="svgwrap" id="art-svg"></div></div>
+  <div class="two" style="margin-top:14px"><div class="panel" id="art-note"></div><div class="vas"><b>Vangelis Auto Show</b><p style="margin:4px 0">Product Goal: a Get In app that lets show visitors explore and configure the Neo vehicle.</p><p style="margin:0">Sprint Goal (VAS Sprint 1): Navigation Completion; Screen Saver Look &amp; Feel.</p></div></div>
+</section>
+
+<section class="chap" id="events" data-title="Events">
+  <div class="chap-head"><span class="chap-n">11</span><h2>The five events on a sprint calendar</h2><p>The Sprint is the container; the other four events happen inside it. Change the sprint length to see how the timeboxes scale.</p></div>
+  <div class="stage"><div class="canvas"><div class="ctrl"><label>Sprint length</label><div class="seg" id="ev-len"></div><span class="hint">Maximum timeboxes from the Scrum Guide are for a one-month sprint; shorter sprints usually need less.</span></div><div class="svgwrap" id="ev-svg"></div></div>
+  <div class="side"><div class="panel" id="ev-note"></div><div class="panel"><h3>Timeboxes at this length</h3><div id="ev-table"></div></div></div></div>
 </section>
 
 <section class="chap" id="board" data-title="Board & flow">
@@ -345,10 +345,10 @@ footer{max-width:1500px;margin:0 auto;padding:0 20px 70px;color:var(--muted);fon
   <div class="stage"><div class="canvas"><div class="ctrl"><div class="seg" id="bd-seg"></div></div><div class="svgwrap" id="bd-svg"></div></div><div class="side"><div class="panel" id="bd-note"></div></div></div>
 </section>
 
-<section class="chap" id="release" data-title="Releases & MVP">
-  <div class="chap-head"><span class="chap-n">14</span><h2>Increments add up to releases</h2><p>Drag through the 20 sprints of the release plan. Each sprint adds a working slice to the Get In app; Release 1 and Release 2 (the MVP) bundle them for users.</p></div>
-  <div class="stage"><div class="canvas"><div class="ctrl"><label for="rl-s">After sprint <span id="rl-n" class="num"></span></label><input id="rl-s" type="range" min="0" max="20" value="7" style="max-width:520px"></div><div class="svgwrap" id="rl-svg"></div></div>
-  <div class="side"><div class="panel" id="rl-note"></div><div class="panel"><h3>MVP</h3><p style="margin:0">A minimum viable product is the smallest version people can actually use and learn from. In the course, Release 1 is bare bones; Release 2 is treated as the MVP because it's the first one with enough features to really try out.</p></div></div></div>
+<section class="chap" id="velocity" data-title="Velocity & forecast">
+  <div class="chap-head"><span class="chap-n">14</span><h2>Velocity turns points into a forecast</h2><p>Velocity is the points a team completes per sprint. Click a bar's + or − to change a sprint, then move the backlog slider to see how many sprints remain.</p></div>
+  <div class="stage"><div class="canvas"><div class="svgwrap" id="vel-svg"></div><div class="ctrl" style="margin-top:12px"><label for="vel-bl">Points left in the backlog: <span id="vel-blv" class="num"></span></label><input id="vel-bl" type="range" min="20" max="400" step="10" value="180" style="max-width:420px"></div></div>
+  <div class="side"><div class="read" style="margin:0" id="vel-read"></div><div class="panel"><h3>A range, not a promise</h3><p>Use the slowest and fastest recent sprints to give a range. Velocity settles after 3 or 4 sprints. It's a planning tool for one team, never a target or a way to compare teams.</p></div></div></div>
 </section>
 
 <section class="chap" id="quiz" data-title="Check yourself">
